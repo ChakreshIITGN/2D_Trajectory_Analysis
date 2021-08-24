@@ -3,7 +3,7 @@ This repo consists classes and functions for our analyses in arXiv trajectories.
 
 Two main classes are Trajectory_Analysis and Mapping
 
-Trajectory_Analysis
+Trajectory_Analysis                                            
 |
 |
 |______ __init__()
@@ -31,3 +31,28 @@ Trajectory_Analysis
 
 
  
+Mapping
+|
+|
+|______ __init__()
+|
+|
+|______ 
+|
+|
+|______ 
+|
+|
+|______ 
+|
+|
+|______ 
+|
+|
+|______ 
+|
+|
+|______ 
+|
+|
+|______ 
