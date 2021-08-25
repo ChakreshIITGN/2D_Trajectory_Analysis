@@ -16,17 +16,15 @@ import networkx as nx
 class Trajectory_Analysis:
     
     
-    def __int__(self,traj_df):
+    def __init__(self,authtraj_df):
         
-        self.trajDF = traj_df
+        self.trajDF = authtraj_df
         
-        self.days = traj_df['Days'] = (traj_df['created'] - traj_df.iloc[0]['created']).dt.days
-        self.trajectory = traj_df[['X_tSNE','Y_tSNE']].values
+        self.days = authtraj_df['Days'] = (authtraj_df['created'] - authtraj_df.iloc[0]['created']).dt.days
+        self.trajectory = authtraj_df[['X_tSNE','Y_tSNE']].values
         
         
-    
-
-    def jump_distances_vector(self,trajectory):
+    def jump_distances_vector(self):
         
         j_dist = np.sqrt(np.sum((self.trajectory[1:]-self.trajectory[:-1])**2,axis=1))
 
@@ -42,26 +40,27 @@ class Trajectory_Analysis:
 
         return zscore
 
-    def distances_fromOrigin_vector(self,trajectory):
+    def distances_fromOrigin_vector(self):
         
-        dist0 = np.sqrt(np.sum((b-a[0])**2,axis=1))
+        dist0 = np.sqrt(np.sum((self.trajectory[1:]-self.trajectory[0])**2,axis=1))
 
         return dist0    
 
-    def jump_duration_days(self,days):
+    def jump_duration_days(self):
         
-        if type(days) != np.ndarray:
-            days = np.array(days)
         
-        timeINdays=days[1:]-days[:-1]
+        timeINdays=self.days[1:]-self.days[:-1]
         
         return timeINdays
 
+
+
     def mass_pos_loc(self):
-        '''
-        This will return the mass dictionary of the locations (Mass here is the number of visits on a location 
-        by an author) of all the visited positions in the embedded space and the position of 
-        the origin of the trajectoy for an author. 
+    
+        '''    
+            This will return the mass dictionary of the locations (Mass here is the number of visits on a location 
+            by an author) of all the visited positions in the embedded space and the position of 
+            the origin of the trajectoy for an author. 
         '''
 
         mass_dict = defaultdict(int)
@@ -98,14 +97,12 @@ class Trajectory_Analysis:
     def radius_of_gyration(self):
 
         '''
-        Radius of gyration for an authors' trajectory
+            Radius of gyration for an authors' trajectory
         '''
-
-        DF = self.trajDF
 
         loc = []
 
-        mass_dict,Pos,Org = mass_pos_loc(DF)
+        mass_dict,Pos,Org = self.mass_pos_loc()
         x0,y0=Org
         M = sum(mass_dict.values())
         xcm,ycm,rg = 0,0,0
@@ -136,16 +133,21 @@ class Trajectory_Analysis:
     def radius_of_gyration_k(self,k):
 
         '''
-        Radius of gyration about the k-th most visited location
-        '''
+            Radius of gyration about the k-th most visited location
+            
+            Input: k = number of top locations 
 
-        DF = self.trajDF
+            Returns : 
+            
+                kth_rcm = Center of mass about top k visited locations 
+                Rgk = Rdius of gyration about top k visited locations
+        '''
 
         k = k
 
         loc = []
 
-        mass_dict,Pos,Org = mass_pos_loc(DF)
+        mass_dict,Pos,Org = self.mass_pos_loc()
 
         x0,y0=Org
 
